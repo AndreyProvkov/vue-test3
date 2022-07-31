@@ -37,31 +37,57 @@ export default {
     created () {
         this.getFingerprint()
     },
+    watch: {
+        response: {
+            handler (val) {
+                localStorage.setItem('authData', JSON.stringify(val))
+            },
+            deep: true
+        }
+    },
     methods: {
         async submit () {
+            let responseData
+
             this.errors = []
 
             this.validate()
 
             if (this.valid) {
-                const responseData = await this.authentication()
-                this.setResponseData(responseData)
+                responseData = await this.authentication()
+
+                this.auth = this.checkResponseData(responseData)
             }
             if (this.auth) {
+                this.setResponseData(responseData)
                 this.$router.push({
                     path: `/${this.response.id_login}`,
                     query: { fio: this.response.fio }
-                })
+                })   
             }
         },
         validate () {
             const regex = /\s+/gi
+
             if (regex.test(this.request.login) || (regex.test(this.request.password))) {
                 this.valid = false
                 this.errors.push('Логин / Пароль должны быть без пробелов')
             } else {
                 this.valid = true
             }
+        },
+        checkResponseData (data) {
+            if (!data) {
+                this.errors.push('Ошибка запроса')
+                return false
+            }
+            if (!data.id_login) {
+                if (!this.errors.includes(data.err_text)) {
+                    this.errors.push(data.err_text)
+                }
+                return false
+            }
+            return true
         },
         async getFingerprint () {
             const fpPromise = FingerprintJS.load()
@@ -70,7 +96,6 @@ export default {
             const result = await fp.get()
 
             this.request.IMEI = result.visitorId
-            this.response.IMEI = result.visitorId
         },
         async authentication () {
             const objToJson = JSON.stringify(this.request)
@@ -83,24 +108,12 @@ export default {
             }
         },
         setResponseData (obj) {
-            this.auth = false
+            let { fio, id_login, TK} = obj
 
-            if (!obj) {
-                return
-            }
-            if (!obj.id_login) {
-                if (!this.errors.includes(obj.err_text)) {
-                    this.errors.push(obj.err_text)
-                }
-            } else {
-                let { fio, id_login, TK} = obj
-
-                this.response.fio = fio
-                this.response.id_login = id_login
-                this.response.TK = TK
-
-                this.auth = true
-            }
+            this.response.fio = fio
+            this.response.id_login = id_login
+            this.response.TK = TK
+            this.response.IMEI = this.request.IMEI
         }
     },
     computed: {
