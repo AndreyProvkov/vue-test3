@@ -3,15 +3,32 @@ import UserView from '../views/UserView.vue'
 
 const routes = [
   {
-    path: '/:id',
+    path: '/user/:id',
     name: 'user',
     component: UserView,
     meta: { requireAuth: true },
     props: (route) => ({ query: route.query }),
+    beforeEnter: (to) => {
+      const dataAuth = JSON.parse(localStorage.getItem('authData'))
+      if (to.params.id !== String(dataAuth.id_login)) {
+        return {
+          path: `/user/${dataAuth.id_login}`
+        }
+      }
+    }
   },
   {
     path: '/login',
     name: 'login',
+    beforeEnter: () => {
+      const dataAuth = JSON.parse(localStorage.getItem('authData'))
+      if (dataAuth) {
+        return {
+          path: `/user/${dataAuth.id_login}`
+        }
+      }
+      return true
+    },
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -28,9 +45,23 @@ const routes = [
   }
 ]
 
+
+
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to) => {
+  if (to.meta.requireAuth &&
+    to.name !== 'login' &&
+    !localStorage.getItem('authData')) {
+    return {
+      name: 'login',
+      query: { redirect: to.fullPath }
+    }
+  }
+  return true
 })
 
 export default router

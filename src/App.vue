@@ -1,7 +1,9 @@
 <template>
   <div class="wrapper">
     <header class="header">
-      <img class="header__logo" src="@/assets/logo.png" alt="logo" />
+      <router-link to="/login">
+        <img class="header__logo" src="@/assets/logo.png" alt="logo" />
+      </router-link>
     </header>
     <main class="main">
       <router-view/>
