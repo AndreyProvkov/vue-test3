@@ -20,6 +20,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
+    meta: { layout: 'AuthLayout' },
     beforeEnter: () => {
       const dataAuth = JSON.parse(localStorage.getItem('authData'))
       if (dataAuth) {

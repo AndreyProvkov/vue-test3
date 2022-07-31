@@ -4,6 +4,7 @@
       <router-link to="/login">
         <img class="header__logo" src="@/assets/logo.png" alt="logo" />
       </router-link>
+      <component :is="layout"></component>
     </header>
     <main class="main">
       <router-view/>
@@ -16,8 +17,20 @@
 </template>
 
 <script>
+import DefaultLayout from '@/layouts/DefaultLayout'
+import AuthLayout from '@/layouts/AuthLayout'
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    DefaultLayout,
+    AuthLayout
+  },
+  computed: {
+    layout() {
+      return this.$route.meta.layout || 'DefaultLayout'
+    }
+  }
 }
 </script>
 
