@@ -1,30 +1,83 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div class="wrapper">
+    <header class="header">
+      <img class="header__logo" src="@/assets/logo.png" alt="logo" />
+    </header>
+    <main class="main">
+      <router-view/>
+    </main>
+    <footer class="footer">
+      <div class="footer__logo"></div>
+      <div class="footer__text">© Андрей Провков 2022</div>
+    </footer>
+  </div>
 </template>
 
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
 <style>
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Lato"),
+    url("./assets/font/Lato-Regular.ttf") format("truetype");
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: "Lato", "Helvetica", "Arial", sans-serif;
+  margin: 0;
+  height: 100%;
+  color: #797979;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  height: 100%;
 }
 
-nav {
-  padding: 30px;
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
 }
 
-nav a.router-link-exact-active {
-  color: #42b983;
+.main {
+  max-width: 1200px;
+  margin: auto;
+  flex: 1 0 auto;
+  padding: 10px;
+}
+
+.footer {
+  color: #fff;
+  flex: 0 0 auto;
+}
+
+.footer__logo {
+  background-image: url('@/assets/footer.svg');
+  min-height: 150px;
+}
+
+.footer__text {
+  background-color: #2C3E50;
+  padding: 10px;
 }
 </style>
