@@ -16,6 +16,15 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/LoginView.vue')
+  },
+  {
+    path: '/page-not-found',
+    name: 'page-not-found',
+    component: () => import('../views/PageNotFound.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: { name: 'page-not-found' }
   }
 ]
 
