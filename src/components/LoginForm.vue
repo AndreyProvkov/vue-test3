@@ -61,8 +61,7 @@ export default {
             if (this.auth) {
                 this.setResponseData(responseData)
                 this.$router.push({
-                    path: `/user/${this.response.id_login}`,
-                    query: { fio: this.response.fio }
+                    path: `/user/${this.response.id_login}`
                 })   
             }
         },

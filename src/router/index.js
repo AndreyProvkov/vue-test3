@@ -7,7 +7,6 @@ const routes = [
     name: 'user',
     component: UserView,
     meta: { requireAuth: true },
-    props: (route) => ({ query: route.query }),
     beforeEnter: (to) => {
       const dataAuth = JSON.parse(localStorage.getItem('authData'))
       if (to.params.id !== String(dataAuth.id_login)) {

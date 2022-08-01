@@ -76,7 +76,6 @@ body {
 
 .main {
   max-width: 1200px;
-  margin: auto;
   flex: 1 0 auto;
   padding: 10px;
 }
