@@ -9,6 +9,9 @@
         :key="doc.id_document"
         class="documents__item"
       >
+        <a href="#" @click="downloadDocument" class="documents__link">
+          <img class="documents__link-img" :src="require(`@/assets/ext-icon/${doc.file_ext}-icon.svg`)" />
+        </a>
         <span class="documents__description">{{ doc.doc_name }} от {{ doc.date_doc }}</span>
       </li>
     </ul>
@@ -41,6 +44,7 @@ export default {
         const obj = JSON.stringify(this.fillRequestParams())
         const res = await fetch(`https://host1.medsafe.tech:40443/api/test?json=${obj}`)
         const data = await res.json()
+        console.log(data)
         return data.body
       } catch {
         this.isError = true
@@ -82,5 +86,13 @@ export default {
   margin-bottom: 15px;
   border-bottom: 1px solid #eaeaea;
   padding-bottom: 15px;
+}
+.documents__link {
+  display: inline-block;
+  height: 100%;
+  margin-right: 10px;
+}
+.documents__link-img {
+  width: 35px;
 }
 </style>
