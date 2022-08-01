@@ -60,9 +60,16 @@ export default {
             }
             if (this.auth) {
                 this.setResponseData(responseData)
-                this.$router.push({
-                    path: `/user/${this.response.id_login}`
-                })   
+                if (this.$route.query.redirect) {
+                    this.$router.push({
+                        path: `${this.$route.query.redirect}`
+                    })
+                } else {
+                    this.$router.push({
+                        path: `/user/${this.response.id_login}`
+                    })   
+                }
+                
             }
         },
         validate () {
@@ -124,6 +131,10 @@ export default {
 </script>
 
 <style>
+.login {
+    max-width: 350px;
+    margin: auto;
+}
 .login__title {
     font-size: 30px;
     line-height: 1.1;

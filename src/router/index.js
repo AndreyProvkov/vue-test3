@@ -6,6 +6,7 @@ const routes = [
     path: '/user/:id',
     name: 'user',
     component: UserView,
+    alias: ['', '/:id'],
     meta: { requireAuth: true },
     beforeEnter: (to) => {
       const dataAuth = JSON.parse(localStorage.getItem('authData'))
@@ -14,6 +15,7 @@ const routes = [
           path: `/user/${dataAuth.id_login}`
         }
       }
+      return true
     }
   },
   {
@@ -37,6 +39,7 @@ const routes = [
   {
     path: '/page-not-found',
     name: 'page-not-found',
+    meta: { layout: 'AuthLayout' },
     component: () => import('../views/PageNotFound.vue')
   },
   {
