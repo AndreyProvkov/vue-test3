@@ -7,6 +7,7 @@
             <div v-if="errors.length" class="login__error">{{ currentError }}</div>
             <button class="login__btn" type="submit">Войти</button>
         </form>
+        <p class="login__data" @click="fillInput">Данные для входа</p>
     </div>
 </template>
 
@@ -120,6 +121,10 @@ export default {
             this.response.id_login = id_login
             this.response.TK = TK
             this.response.IMEI = this.request.IMEI
+        },
+        fillInput () {
+            this.request.login = '803286'
+            this.request.password = 'NH2Pepn'
         }
     },
     computed: {
@@ -184,5 +189,8 @@ export default {
 .login__btn:disabled {
     cursor: default;
     background-color: gray;
+}
+.login__data {
+    cursor: pointer;
 }
 </style>
