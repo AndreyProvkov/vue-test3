@@ -1,6 +1,7 @@
 <template>
   <div class="documents">
     <h2 class="documents__title">Список документов</h2>
+    <p class="documents__download-error" v-if="isDownloadError">Ошибка загрузки файла</p>
     <p v-if="!endLoad">Загрузка...</p>
     <p v-else-if="isError">{{ showError }}</p>
     <ul v-else class="item-wrapper">
@@ -9,7 +10,7 @@
         :key="doc.id_document"
         class="documents__item"
       >
-        <a href="#" @click="downloadDocument" class="documents__link">
+        <a href="#" @click.prevent="downloadDocument(doc)" class="documents__link">
           <img class="documents__link-img" :src="require(`@/assets/ext-icon/${doc.file_ext}-icon.svg`)" />
         </a>
         <span class="documents__description">{{ doc.doc_name }} от {{ doc.date_doc }}</span>
@@ -25,8 +26,19 @@ export default {
     return {
       endLoad: false,
       isError: false,
+      isDownloadError: false,
       errors: [],
-      documents: []
+      documents: [],
+      downloadRequest: {
+        id_login: '',
+        id_people: '',
+        TK: '',
+        IMEI: '',
+        Name_app: 'connect',
+        Name_event: 'get_pic_path', 
+        id_document: '',
+        doc_type: ''
+      }
     }
   },
   async mounted() {
@@ -44,22 +56,50 @@ export default {
         const obj = JSON.stringify(this.fillRequestParams())
         const res = await fetch(`https://host1.medsafe.tech:40443/api/test?json=${obj}`)
         const data = await res.json()
-        console.log(data)
         return data.body
       } catch {
         this.isError = true
         this.errors.push('Ошибка загрузки')
       }
     },
-    fillRequestParams() {
-      const obj = JSON.parse(localStorage.getItem('authData'))
-      return {
-        id_login: obj.id_login,
-        id_people: obj.id_login,
-        TK: obj.TK,
-        IMEI: obj.IMEI,
-        Name_app: 'connect',
-        Name_event: 'list_load'
+    fillRequestParams(doc = null, type = 'documents') {
+      const { id_login, TK, IMEI } = JSON.parse(localStorage.getItem('authData'))
+      if (type === 'documents') {
+        return {
+          id_login: id_login,
+          id_people: id_login,
+          TK: TK,
+          IMEI: IMEI,
+          Name_app: 'connect',
+          Name_event: 'list_load'
+        }
+      }
+      if (type === 'download') {
+        return {
+          id_login: id_login,
+          id_people: id_login,
+          TK: TK,
+          IMEI: IMEI,
+          Name_app: 'connect',
+          Name_event: 'get_pic_path', 
+          id_document: doc.id_document,
+          doc_type: doc.doc_type
+        }
+      }
+    },
+    async downloadDocument (doc) {
+      try {
+        const obj = JSON.stringify(this.fillRequestParams(doc, 'download'))
+        const res = await fetch(`https://host1.medsafe.tech:40443/api/test?json=${obj}`)
+        const data = await res.json()
+
+        const currentHref = `https://host1.medsafe.tech:40443/${data.body[0].hash}`
+        window.location.href = currentHref
+      } catch {
+        this.isDownloadError = true
+        setTimeout(() => {
+          this.isDownloadError = false
+        }, 1500);
       }
     }
   },
@@ -75,6 +115,13 @@ export default {
 .documents {
   width: 70%;
   margin: auto;
+  position: relative;
+}
+.documents__download-error {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .item-wrapper {
   padding: 0;
