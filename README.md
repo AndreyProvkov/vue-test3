@@ -1,5 +1,10 @@
 # vuetest3
 
+## Fast start
+```
+npm i && npm run serve
+```
+
 ## Project setup
 ```
 npm install
